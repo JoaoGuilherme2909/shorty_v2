@@ -1,0 +1,7 @@
+services:
+  redis:
+    container_name: redis_shorty
+    image: redis
+    command: redis-server --requirepass testredis
+    ports:
+      - "6379:6379"

@@ -1,4 +1,4 @@
-package redisStore
+package store
 
 import (
 	"context"
@@ -6,12 +6,11 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RedisClient struct {
+type Client struct {
 	Client *redis.Client
-	Ctx    context.Context
 }
 
-func NewRedisClient(addr, pass string) (*RedisClient, error) {
+func NewClient(addr, pass string) (*Client, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     addr,
 		Password: pass,
@@ -24,8 +23,7 @@ func NewRedisClient(addr, pass string) (*RedisClient, error) {
 		return nil, err
 	}
 
-	return &RedisClient{
+	return &Client{
 		Client: rdb,
-		Ctx:    ctx,
 	}, nil
 }

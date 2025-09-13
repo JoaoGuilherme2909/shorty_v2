@@ -3,28 +3,34 @@ package main
 import (
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/joaoguilherme2909/shorty_v2/api"
-	"github.com/joaoguilherme2909/shorty_v2/store/redisStore"
+	"github.com/joaoguilherme2909/shorty_v2/store"
 )
 
 func main() {
 	if err := run(); err != nil {
 		slog.Error("Something went wrong")
+		os.Exit(1)
 	}
 	slog.Info("Application running")
 }
 
 func run() error {
-
-	connection, err := redisStore.NewRedisClient("localhost:6379", "testredis")
+	client, err := store.NewClient("localhost:6379", "testredis")
 
 	if err != nil {
 		return err
 	}
 
-	handler := api.NewHandler(connection)
+	defer client.Client.Close()
+
+	handler, err := api.NewHandler(client)
+	if err != nil {
+		return err
+	}
 
 	s := http.Server{
 		Addr:         ":8080",
